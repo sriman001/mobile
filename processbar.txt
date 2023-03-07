@@ -1,0 +1,46 @@
+// process
+public class MainActivity extends AppCompatActivity {
+    Button button;
+    ProgressDialog pd;
+ 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pd = new ProgressDialog(MainActivity.this);
+                pd.setMax(100);
+                pd.setMessage("Its loading....");
+                pd.setTitle("ProgressDialog bar example");
+				pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				pd.show();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            while (pd.getProgress() <= pd.getMax()) 
+	                           {
+                                Thread.sleep(200);
+                                handle.sendMessage(handle.obtainMessage());
+                                if (pd.getProgress() == pd.getMax()) 
+  	                              {
+                                    pd.dismiss();
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }                     }
+                }).start();  
+Handler handle = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    pd.incrementProgressBy(1);
+                }
+            };
+        });
+    }
+				}
